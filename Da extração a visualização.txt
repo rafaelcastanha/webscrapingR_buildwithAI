@@ -1,0 +1,136 @@
+#DA EXTRACAO AO VISUALIZACAO
+
+#Site utilizado: https://www.metacritic.com/browse/game/ps4/all/all-time/metascore/?releaseYearMin=2014&releaseYearMax=2024&platform=ps4&page=1
+
+#Objetivo: construir uma tabela (Dataframe) com colunas contendo: nome dos games, lancamento e score.
+
+##############################################################
+
+#Bibliotecas
+
+install.packages('rvest')
+library(rvest)
+
+
+#WEB SCRAPING TOTAL
+
+#Fonte e total
+
+fonte <-"https://www.metacritic.com/browse/game/ps4/all/all-time/metascore/?releaseYearMin=2014&releaseYearMax=2024&platform=ps4&page=1" 
+
+#Determinando o loop total
+
+total<- read_html(fonte) %>%
+  html_nodes(".c-navigationPagination_itemButtonContent") %>%  #identificando o total
+  html_text2()
+
+total<-total[4]
+total<-as.numeric(total)
+
+#Gerando todos links para loop
+
+#lembre-se de avaliar a URL!
+
+fonte_scrap<-character()
+
+i<-1
+
+for (i in 1:total){
+  
+  fonte_scrap[i]<-paste0("https://www.metacritic.com/browse/game/ps4/all/all-time/metascore/?releaseYearMin=2014&releaseYearMax=2024&platform=ps4&page=",i)
+  
+}
+
+#Extração dos nome dos games
+
+nome_games<-character()
+
+for (i in fonte_scrap){
+
+extract<-read_html(i)  
+  
+  extract_1<- extract %>%
+    html_nodes(".c-finderProductCard_titleHeading") %>%   #Classe que contem os nomes
+    html_text2()
+  
+  nome_games<-append(nome_games, extract_1) 
+  
+}
+
+
+data_games<-character()
+
+nota_games<-character()
+
+
+for (i in fonte_scrap){
+
+extract<-read_html(i)    
+    
+  extract_2<- extract  %>%
+    html_nodes(".u-text-uppercase") %>%
+    html_text2()
+  
+  data_games<-append(data_games, extract_2)
+  
+  extract_3<- extract %>%
+    html_nodes(".c-siteReviewScore_xsmall[data-v-4cdca868]") %>%
+    html_text2()
+  
+  nota_games<-append(nota_games, extract_3)
+  
+}
+
+#tabela
+
+tabela_games<-data.frame("Games"=nome_games, "Lançamento"= data_games, "Score"=nota_games)
+
+View(tabela_games)
+
+
+
+#DATA CLEAN
+
+
+nomes_clean<-gsub("^\\d{1,3}(,\\d{3})*\\.\\s+", "", nome_games)
+
+data_clean<-gsub("^\\w+\\s+\\d+,\\s*(\\d{4})$", "\\1", data_games)
+
+
+
+#Construindo uma nova tabela
+
+tabela_games<-data.frame("Games"=nomes_clean, "Lançamento"= data_games, "Ano"=data_clean ,"Score"=nota_games)
+
+
+#Frequências
+
+tabela_anos<-table(tabela_games$Ano) #calcula frequencias dos anos de lancamento
+
+tabela_anos
+
+barplot(tabela_anos) #plot anos - se quiser ajustar o eixo-y: barplot(tabela_anos, ylim=c(0,400))
+
+tabela_anos<-data.frame(tabela_anos) #cria um dataframe das frequencias
+
+colnames(tabela_anos)[1]<-"Anos"
+colnames(tabela_anos)[2]<-"Frequência"
+
+View(tabela_anos)
+
+#SCORES
+
+tabela_score<-table(tabela_games$Score) #calcula as frequencias do score
+
+tabela_score
+
+barplot(tabela_score) #plot score
+
+tabela_score<-data.frame(tabela_score) #cria um dataframe com os scores
+
+colnames(tabela_score)[1]<-"Score"
+colnames(tabela_score)[2]<-"Frequência"
+
+tabela_score<-tabela_score[order(tabela_score$Score,decreasing=TRUE),]
+
+View(tabela_score)

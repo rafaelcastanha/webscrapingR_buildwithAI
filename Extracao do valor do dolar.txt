@@ -1,0 +1,18 @@
+#EXTRACAO DO VALOR ATUAL DO DOLAR
+
+
+#instale a biblioteca caso nao tenha instalado com: install.packages('rvest') 
+
+
+library(rvest) #biblioteca utilizada
+
+
+dolar<- read_html("https://economia.uol.com.br/cotacoes/") %>% #INSERIR URL
+  	html_nodes(".currency-exchange .primeiroGrafico .subtituloGraficoValor") %>%  #INSERIR CLASSE A SER RASPADA
+  	html_text2() #esta funcao retorna o valor em formato textual
+
+dolar #executa o valor do dolar 
+
+texto_dolar<-paste0("O valor do dolar atualmente é ", dolar) #ajustando o item raspando em forma de texto
+
+texto_dolar #executa o texto

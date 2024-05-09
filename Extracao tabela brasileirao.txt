@@ -1,0 +1,19 @@
+#Extraindo tabela do brasileirao
+
+#instale a biblioteca caso nao tenha instalado com: install.packages('rvest') 
+
+library(rvest)
+
+brasileirao <-  read_html("https://www.gazetaesportiva.com/campeonatos/brasileiro-serie-a/") %>% #INSERIR URL
+  		html_nodes(".table") %>% #INSERIR CLASSE A SER RASPADA
+  		html_table()   #esta funcao retorna uma tabela
+
+brasileirao
+
+brasileirao<-data.frame(brasileirao) #converte em dataframe
+
+brasileirao<-brasileirao[,-(1:2)] #remove as duas primeiras colunas
+
+colnames(brasileirao)[10]<-"Aproveitamento (%)" #troca o nome da decima coluna
+
+brasileirao

@@ -1,0 +1,11 @@
+#Exercicios
+
+# Extrair cotacao do dolar - https://economia.uol.com.br/cotacoes/
+
+# Tabela do brasileirao: Extrair a tabela toda usando funcao 'html_table()': "https://www.gazetaesportiva.com/campeonatos/brasileiro-serie-a/"
+
+# Lista games IMDB: Extraír o nome, lancamento e nota -  https://www.imdb.com/list/ls097840768/?sort=list_order,asc&st_dt=&mode=detail&page=1
+
+# Revista Científica: Extrair título e autores - https://seer.ufrgs.br/index.php/EmQuestao/issue/view/4942
+
+# Encontrar um site de noticias e extrair manchete e subtitulo das noticias organizando-as em colunas de um dataframe
